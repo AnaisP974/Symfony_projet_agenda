@@ -3,7 +3,7 @@
     /**
      * Cette fonction permet de vérifier si cette valeur est vide ou non.
      * 
-     * Elel retourne "true" si elle est vide et "false" dans le cas contraire
+     * Elle retourne "true" si elle est vide et "false" dans le cas contraire
      *
      * @param string $value
      * @return boolean
@@ -101,7 +101,7 @@
          * @param string $column
          * @return boolean
          */
-        function is_already_email_on_create(string $value, string $table, string $column) : bool {
+        function is_already_exist_on_create(string $value, string $table, string $column) : bool {
             //on établie une conexxion avec la base de données
             require __DIR__ . "/../db/connexion.php";
             //je prépare la requête
@@ -112,12 +112,44 @@
             $req->execute();
             //puis je récupère la réponse
             $row = $req->rowCount();
-            //si la valeur récupérée est = 0, c'est qu'elle n'existe pas, sinon c'est qu'elle existe
+           
+            //fermeture du curseur
+            $req->closeCursor();
+
+             //si la valeur récupérée est = 0, c'est qu'elle n'existe pas, sinon c'est qu'elle existe
             if ($row == 0) {
                 return false;
             }
             return true;
         }
+
+
+        /**
+         * Cette fonction vérifie si les informations tapé par l'utilisateur lors d'une modification existe déjà 
+         *
+         * @param string $value
+         * @param string $table
+         * @param string $column
+         * @param string $id
+         * @return boolean
+         */
+        function is_already_exists_on_update(string $value, string $table, string $column, string $id ) : bool {
+            
+            require __DIR__ . "/../db/connexion.php";
+
+            $req = $db->prepare("SELECT * FROM {$table}");
+
+            $req->execute();
+            $all_rows = $req->fetchAll();
+
+            foreach($all_rows as $row){
+                if(($row['id'] != $id) && ($row[$column] == $value)){  
+                        return true;
+                }
+            }
+            return false;
+        }
+
 
 
         /**
@@ -171,7 +203,7 @@
          * @return boolean
          */
         function is_invalid_phone(string $value) : bool {
-            if ( preg_match("/^[0-9\s\-\+\(\)]{5,30}$/", $value) ) 
+            if ( preg_match("/^[0-9\s\-\+\.\(\)]{5,30}$/", $value) ) 
             {
                 return false;
             }

@@ -14,3 +14,27 @@ body{
 nav a, footer p {
     font-family: 'Pacifico', cursive;
 }
+/* mobile-first */
+.my-card{
+    width: 100%;
+    border-radius: 2rem;
+}
+
+.my-card:hover{
+    background-color: white;
+}
+
+
+
+/* tablettes */
+@media screen and (min-width: 768px) {
+    .my-card{
+        width: 80%;      
+    }
+}
+/* laptop (desktop 1200)*/
+@media screen and (min-width: 900px) {
+    .my-card{
+        width: 50%;      
+    }
+}
